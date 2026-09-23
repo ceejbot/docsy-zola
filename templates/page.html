@@ -1,0 +1,15 @@
+{#- Port of docsy v0.16.0 layouts/docs/single.html + _td-content.html. -#}
+{% extends "base.html" %}
+{% block kind %}page{% endblock kind %}
+{% block main %}
+<div class="td-content">
+  <h1>{{ page.title }}</h1>
+  {%- if page.description %}<div class="lead">{{ page.description | markdown(inline=true) | safe }}</div>{% endif %}
+  <header class="article-meta">
+    {% include "partials/taxonomy-terms-article.html" %}
+  </header>
+  {% block content_after_header %}{% endblock content_after_header %}
+  {{ page.content | safe }}
+  {% block content_end %}{% endblock content_end %}
+</div>
+{% endblock main %}

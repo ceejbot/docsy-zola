@@ -1,0 +1,18 @@
+docsy-zola
+Copyright 2026 C J Silverio
+
+This theme is a port to Zola of the docsy Hugo theme by the docsy authors
+(https://www.docsy.dev/, https://github.com/google/docsy), licensed under the
+Apache License, Version 2.0. docsy-zola as a whole is distributed under the
+same license; see LICENSE.
+
+It vendors, unmodified, the following third-party works under their own
+licenses:
+
+  Bootstrap 5.3.8            sass/vendor/bootstrap, static/js/bootstrap.bundle.min.js
+    Copyright 2011-2025 The Bootstrap Authors
+    MIT License, see LICENSE-bootstrap
+
+  Font Awesome Free 6.7.2    sass/vendor/fontawesome, static/webfonts
+    Copyright Fonticons, Inc.
+    Icons CC BY 4.0, fonts SIL OFL 1.1, code MIT; see LICENSE-fontawesome

@@ -1,0 +1,44 @@
+{#-
+  docsy-zola base layout: the docs layout from docsy v0.16.0 (layouts/docs/baseof.html).
+
+  Every page kind (home, section, page, taxonomy list, term) shares this frame:
+  navbar, left nav, right-hand TOC and page-meta links, breadcrumb, footer. Child
+  templates fill `main`. The partials derive the current page themselves from
+  whichever of `page`, `section`, `term`, `taxonomy` is defined, so the same
+  include works from any kind of template.
+-#}
+<!doctype html>
+<html lang="{{ lang }}"{% if config.extra.ui.show_light_dark_mode_menu | default(value=false) %} data-theme-init{% endif %}{% if config.extra.mermaid_version %} data-mermaid-version="{{ config.extra.mermaid_version }}"{% endif %}>
+  <head>
+    {% include "partials/head.html" %}
+  </head>
+  <body class="td-{% block kind %}page{% endblock kind %}{% if page is defined and page.extra.body_class %} {{ page.extra.body_class }}{% endif %}">
+    {#- First in tab order, so keyboard and screen-reader users can jump past the
+        navbar, the two search inputs and the full site tree in the left nav. #}
+    <a class="td-skip-link visually-hidden-focusable" href="#td-main-content">Skip to content</a>
+    <header>
+      {% include "partials/navbar.html" %}
+    </header>
+    <div class="container-fluid td-outer">
+      <div class="td-main" data-bs-spy="scroll" data-bs-target=".td-toc" data-bs-root-margin="0px 0px -10%">
+        <div class="row flex-xl-nowrap">
+          <aside class="col-12 col-md-3 col-xl-2 td-sidebar d-print-none">
+            {% include "partials/sidebar.html" %}
+          </aside>
+          <aside class="td-sidebar-toc">
+            {% include "partials/page-meta-links.html" %}
+            {% include "partials/toc.html" %}
+          </aside>
+          <main id="td-main-content" class="col-12 col-md-9 col-xl-8 ps-md-5" role="main">
+            {% if not config.extra.ui.breadcrumb_disable | default(value=false) %}
+              {% include "partials/breadcrumb.html" %}
+            {% endif %}
+            {% block main %}{% endblock main %}
+          </main>
+        </div>
+      </div>
+      {% include "partials/footer.html" %}
+    </div>
+    {% include "partials/scripts.html" %}
+  </body>
+</html>

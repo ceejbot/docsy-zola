@@ -1,0 +1,19 @@
+{#- Port of docsy v0.16.0 layouts/taxonomy.html: the term cloud for one taxonomy. -#}
+{% extends "base.html" %}
+{% block kind %}taxonomy{% endblock kind %}
+{% block main %}
+<div class="td-content">
+  <main class="taxonomy-terms-page">
+    <h1>{{ taxonomy.name | title }}</h1>
+    {%- if terms %}
+    <div class="taxonomy taxonomy-terms-cloud taxo-{{ taxonomy.name }}">
+      <ul class="taxonomy-terms">
+        {%- for t in terms %}
+        <li><a class="taxonomy-term" href="{{ t.permalink | safe }}" data-taxonomy-term="{{ t.slug }}"><span class="taxonomy-label">{{ t.name }}</span><span class="taxonomy-count">{{ t.pages | length }}</span></a></li>
+        {%- endfor %}
+      </ul>
+    </div>
+    {%- endif %}
+  </main>
+</div>
+{% endblock main %}

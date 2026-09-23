@@ -1,0 +1,23 @@
+{#- Port of docsy v0.16.0 layouts/term.html: the pages carrying one term, as cards. -#}
+{% extends "base.html" %}
+{% block kind %}term{% endblock kind %}
+{% block main %}
+<div class="td-content">
+  <main class="taxonomy-taxonomy-page">
+    <h1>{{ taxonomy.name | title }}: <span>{{ term.name }}</span></h1>
+    <div>
+      {%- set pages = term.pages %}{% if paginator %}{% set pages = paginator.pages %}{% endif %}
+      {%- for p in pages %}
+      <article class="card article-teaser">
+        <h3><a href="{{ p.permalink | safe }}">{{ p.title }}</a></h3>
+        <p>{% if p.description %}{{ p.description | markdown(inline=true) | safe }}{% endif %}</p>
+      </article>
+      {%- endfor %}
+    </div>
+    {%- if paginator and paginator.number_pagers > 1 %}
+    {% include "partials/pagination.html" %}
+    {%- endif %}
+    <a href="{{ get_url(path='/' ~ taxonomy.name ~ '/') | safe }}" class="all-taxonomy-terms">All {{ taxonomy.name | title }}</a>
+  </main>
+</div>
+{% endblock main %}

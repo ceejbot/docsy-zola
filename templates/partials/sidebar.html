@@ -1,0 +1,39 @@
+{#-
+  Port of docsy v0.16.0 _partials/sidebar.html + sidebar-tree.html.
+
+  The tree is rooted at the site root so the same full nav renders on every page
+  (this repo's Hugo override did the same; docsy's default roots at the current
+  top-level section). Active state is rendered server-side from `current_path`,
+  so no client-side hydration is needed. With `ui.sidebar_menu_foldable` the
+  branches fold via CSS on the checkbox docsy uses; the active path is checked.
+
+  Pages and sections marked `extra.toc_hide` are omitted, as in docsy.
+-#}
+{%- set ui = config.extra.ui | default(value={}) %}
+{%- set root = get_section(path="_index.md") %}
+<div id="td-sidebar-menu" class="td-sidebar__inner">
+  {%- if config.extra.sidebar_logo %}
+  {#- A site mark centered over the left column, linking home. Sized by CSS
+      (.td-sidebar__logo), so any SVG works. #}
+  <a class="td-sidebar__logo" href="{{ get_url(path='/') | safe }}" aria-label="{{ config.title }} home">{{<brand.mark path={config.extra.sidebar_logo} alt={config.title} />}}</a>
+  {%- endif %}
+  {%- if not ui.sidebar_search_disable | default(value=false) %}
+  <form class="td-sidebar__search d-flex align-items-center">
+    {% include "partials/search-input.html" %}
+    <button class="btn btn-link td-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"></button>
+  </form>
+  {%- else %}
+  <div id="content-mobile">
+  <form class="td-sidebar__search d-flex align-items-center">
+    {% include "partials/search-input.html" %}
+    <button class="btn btn-link td-sidebar__toggle" type="button" data-bs-toggle="collapse" data-bs-target="#td-section-nav" aria-controls="td-section-nav" aria-expanded="false" aria-label="Toggle section navigation"></button>
+  </form>
+  </div>
+  <div id="content-desktop"></div>
+  {%- endif %}
+  <nav class="td-sidebar-nav collapse{% if ui.sidebar_search_disable | default(value=false) %} td-sidebar-nav--search-disabled{% endif %}{% if ui.sidebar_menu_foldable | default(value=false) %} foldable-nav{% endif %}" id="td-section-nav">
+    <ul class="td-sidebar-nav__section pe-md-3 ul-0">
+      {{<sidebar.section section={root} here={current_path | default(value="/")} depth={0} foldable={ui.sidebar_menu_foldable | default(value=false)} />}}
+    </ul>
+  </nav>
+</div>

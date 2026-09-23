@@ -1,0 +1,68 @@
+// docsy-zola: the docsy stylesheet, compiled by Zola (grass) instead of Hugo.
+//
+// This is a Sass PARTIAL (leading underscore) on purpose. Zola compiles every
+// non-partial .scss under a theme's sass/ into public/, and there is no way for
+// a site's sass/ to import a theme partial by bare name, so the site's own
+// sass/main.scss reaches in by relative path:
+//
+//   // project variables (Bootstrap + docsy $td-* overrides) go first
+//   $primary: #3a5a78;
+//   @import "../themes/docsy-zola/sass/docsy";
+//   // project styles go last, with every Bootstrap variable and mixin in scope
+//
+// The import order mirrors docsy's td/_main.scss (v0.16.0). The two project
+// hook files docsy looks for (_variables_project.scss, _styles_project.scss)
+// are replaced by "before the import" and "after the import" in the site file.
+// _variables_project_after_bs.scss (project variables that depend on Bootstrap's
+// computed values) has no hook here: set them after this import and before your
+// styles if you need them.
+
+@import 'vendor/bootstrap/functions';
+
+@import 'td/variables_forward';
+@import 'td/variables';
+@import 'td/support/mixins';
+
+@import 'vendor/bootstrap/bootstrap';
+@import 'td/support/bootstrap_vers_test';
+
+// Font Awesome Free 6: the woff2/ttf files live in the theme's static/webfonts,
+// which Zola serves at /webfonts. The path is relative to the compiled CSS,
+// which lands at the site root.
+$fa-font-path: 'webfonts' !default;
+@import 'vendor/fontawesome/fontawesome';
+@import 'vendor/fontawesome/solid';
+@import 'vendor/fontawesome/brands';
+
+@import 'td/support/utilities';
+@import 'td/blog';
+@import 'td/boxes';
+@import 'td/code';
+@import 'td/colors';
+@import 'td/footer';
+@import 'td/nav';
+@import 'td/table';
+@import 'td/sidebar-tree';
+@import 'td/sidebar-toc';
+@import 'td/breadcrumb';
+@import 'td/alerts';
+@import 'td/content';
+@import 'td/search';
+@import 'td/main-container';
+@import 'td/blocks/blocks';
+@import 'td/section-index';
+@import 'td/pageinfo';
+@import 'td/taxonomy';
+@import 'td/drawio';
+@import 'td/scroll';
+@import 'td/shortcodes';
+@import 'td/swagger';
+@import 'td/support/rtl';
+
+@if $td-enable-google-fonts {
+  @import url($td-web-font-path);
+}
+
+// Zola-specific additions: things Hugo did in templates or that docsy's JS
+// did at runtime, expressed in CSS here so the theme needs less script.
+@import 'zola';

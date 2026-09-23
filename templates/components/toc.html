@@ -1,0 +1,12 @@
+{#- Recursive table-of-contents list, mirroring Hugo's TableOfContents markup. -#}
+{% component toc.list(headers: array) %}
+<ul>
+  {%- for h in headers %}
+  <li><a href="#{{ h.id }}">{{ h.title | safe }}</a>
+    {%- if h.children %}
+    {{<toc.list headers={h.children} />}}
+    {%- endif %}
+  </li>
+  {%- endfor %}
+</ul>
+{% endcomponent toc.list %}

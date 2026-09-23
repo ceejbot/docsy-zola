@@ -1,0 +1,15 @@
+{#-
+  brand.mark — a logo image from static/. An SVG is inlined so it inherits the
+  surrounding text colour (docsy does the same with assets/icons/logo.svg) and so
+  it scales with CSS: the XML prolog goes, and so do the root element's width and
+  height attributes, which would otherwise pin the intrinsic size (a 1200x1200
+  mark shrunk to height: 2rem still laid out 1200px wide). Anything that is not
+  an SVG becomes an <img>.
+-#}
+{% component brand.mark(path: string, alt: string = "") %}
+{%- if path is ending_with(pat=".svg") -%}
+{{ load_data(path="static/" ~ path, format="plain") | regex_replace(pattern="<[?]xml[^>]*[?]>", rep="") | regex_replace(pattern='<svg([^>]*?) (width|height)="[^"]*"', rep="<svg$1") | regex_replace(pattern='<svg([^>]*?) (width|height)="[^"]*"', rep="<svg$1") | safe }}
+{%- else -%}
+<img src="{{ get_url(path=path) | safe }}" alt="{{ alt }}">
+{%- endif -%}
+{% endcomponent brand.mark %}

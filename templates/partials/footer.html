@@ -1,0 +1,26 @@
+{#-
+  Port of docsy v0.16.0 _partials/footer.html with its three columns. The center
+  column carries the copyright line built from `config.extra.copyright`; a site
+  overrides partials/footer/center.html to change it (this repo's override adds
+  the build timestamp). Left and right columns take `config.extra.footer_links`
+  = [{ name, url, icon }] split by `side = "left" | "right"`.
+-#}
+<footer class="td-footer row d-print-none">
+  <div class="container-fluid">
+    <div class="row mx-md-2">
+      <div class="td-footer__left col-6 col-sm-4 order-sm-1">
+        {%- for l in config.extra.footer_links | default(value=[]) %}{% if l.side | default(value="left") == "left" %}
+        <a class="td-footer__link-item" href="{{ l.url }}" target="_blank" rel="noopener" aria-label="{{ l.name }}">{% if l.icon %}<i class="{{ l.icon }}"></i>{% else %}{{ l.name }}{% endif %}</a>
+        {%- endif %}{% endfor %}
+      </div>
+      <div class="td-footer__right col-6 col-sm-4 order-sm-3">
+        {%- for l in config.extra.footer_links | default(value=[]) %}{% if l.side | default(value="left") == "right" %}
+        <a class="td-footer__link-item" href="{{ l.url }}" target="_blank" rel="noopener" aria-label="{{ l.name }}">{% if l.icon %}<i class="{{ l.icon }}"></i>{% else %}{{ l.name }}{% endif %}</a>
+        {%- endif %}{% endfor %}
+      </div>
+      <div class="td-footer__center col-12 col-sm-4 py-2 order-sm-2">
+        {% include "partials/footer/center.html" %}
+      </div>
+    </div>
+  </div>
+</footer>

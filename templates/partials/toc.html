@@ -1,0 +1,21 @@
+{#-
+  Port of docsy v0.16.0 _partials/toc.html.
+
+  Zola exposes the table of contents as `toc`, a tree of {level, id, permalink,
+  title, children}. It is rendered into the same <nav id="TableOfContents"> Hugo
+  emits so docsy's sidebar-toc styles and Bootstrap's ScrollSpy target apply
+  unchanged. The td-toc element always renders, even empty, because ScrollSpy is
+  configured against it.
+-#}
+{%- if page is defined %}{% set cur = page %}{% elif section is defined %}{% set cur = section %}{% else %}{% set cur = false %}{% endif -%}
+<div class="td-toc" data-proofer-ignore>
+{%- if cur and cur.toc and not cur.extra.notoc | default(value=false) %}
+  <div class="td-toc-title">
+    <span class="td-toc-title__text">On this page</span>
+    <a class="td-toc-title__link" title="Top of page" href="#"></a>
+  </div>
+  <nav id="TableOfContents">
+    {{<toc.list headers={cur.toc} />}}
+  </nav>
+{%- endif %}
+</div>

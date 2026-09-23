@@ -1,0 +1,17 @@
+{#-
+  Port of docsy v0.16.0 _partials/search-input.html, offline-search branch only.
+
+  Zola builds the search index itself (config `[search]`, `build_search_index =
+  true`), so the input names the index URL and static/js/docsy-search.js does the
+  rest. Results render as a list under the input (styled in sass/_zola.scss)
+  rather than docsy's jQuery-driven Bootstrap popover.
+-#}
+{%- if config.build_search_index %}
+<div class="td-search td-search--offline">
+  <div class="td-search__icon"></div>
+  <input type="search" name="q" class="td-search__input form-control" placeholder="Search this site…" aria-label="Search this site" autocomplete="off"
+    data-offline-search-index-json-src="{{ get_url(path='search_index.' ~ lang ~ '.json', cachebust=true) | safe }}"
+    data-offline-search-max-results="{{ config.extra.offline_search_max_results | default(value=10) }}">
+  <ul class="td-search__results" role="listbox" aria-label="Search results"></ul>
+</div>
+{%- endif %}

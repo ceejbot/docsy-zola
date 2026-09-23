@@ -1,0 +1,12 @@
+{#- Bootstrap pagination for Zola's `paginator`, matching Hugo's _internal/pagination.html shape. -#}
+<nav aria-label="Pagination">
+  <ul class="pagination">
+    <li class="page-item{% if not paginator.previous %} disabled{% endif %}"><a class="page-link" href="{{ paginator.first | safe }}" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a></li>
+    <li class="page-item{% if not paginator.previous %} disabled{% endif %}"><a class="page-link" href="{{ paginator.previous | default(value=paginator.first) | safe }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a></li>
+    {%- for i in range(start=1, end=paginator.number_pagers + 1) %}
+    <li class="page-item{% if i == paginator.current_index %} active{% endif %}"><a class="page-link" href="{{ paginator.base_url | safe }}{% if i > 1 %}{{ i }}/{% endif %}">{{ i }}</a></li>
+    {%- endfor %}
+    <li class="page-item{% if not paginator.next %} disabled{% endif %}"><a class="page-link" href="{{ paginator.next | default(value=paginator.last) | safe }}" aria-label="Next"><span aria-hidden="true">&raquo;</span></a></li>
+    <li class="page-item{% if not paginator.next %} disabled{% endif %}"><a class="page-link" href="{{ paginator.last | safe }}" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a></li>
+  </ul>
+</nav>

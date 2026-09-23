@@ -1,0 +1,7 @@
+{#- Port of docsy v0.16.0 _partials/footer/center.html + footer/copyright.html. -#}
+{%- set authors = config.extra.copyright | default(value=config.title ~ " Authors") %}
+<span class="td-footer__copyright">&copy; {{ now() | date(format="%Y") }} <span class="td-footer__authors">{{ authors }}</span></span>
+<span class="td-footer__all_rights_reserved">All Rights Reserved</span>
+{%- if config.extra.privacy_policy %}
+<span class="ms-2"><a href="{{ config.extra.privacy_policy }}" target="_blank" rel="noopener">Privacy Policy</a></span>
+{%- endif %}

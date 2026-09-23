@@ -1,0 +1,65 @@
+# Build the demo site (example/) on every push and pull request, and publish
+# it to GitHub Pages at https://ceejbot.github.io/docsy-zola/ from `latest`.
+#
+# Auth is OIDC-only (pages: write + id-token: write); no secrets. One-time repo
+# setup: Settings → Pages → Source: GitHub Actions. Zola 0.23+ is required
+# because the templates are Tera 2 components.
+name: demo-site
+permissions:
+    contents: read
+
+on:
+    push:
+        branches: ["latest"]
+    pull_request:
+    workflow_dispatch:
+
+concurrency:
+    group: pages-${{ github.event_name == 'pull_request' && github.ref || 'deploy' }}
+    cancel-in-progress: true
+
+env:
+    ZOLA_VERSION: "0.23.6"
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Install zola
+              run: |
+                  curl -fsSL "https://github.com/getzola/zola/releases/download/v${ZOLA_VERSION}/zola-v${ZOLA_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+                      | tar xz -C "${RUNNER_TEMP}"
+                  echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+
+            - name: Check internal links
+              run: zola check --skip-external-links
+              working-directory: example
+
+            - name: Build
+              run: zola build
+              working-directory: example
+
+            - name: Upload Pages artifact
+              if: github.event_name != 'pull_request'
+              uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+              with:
+                  path: example/public
+
+    deploy:
+        if: github.event_name != 'pull_request'
+        runs-on: ubuntu-latest
+        needs: build
+        permissions:
+            pages: write
+            id-token: write
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5

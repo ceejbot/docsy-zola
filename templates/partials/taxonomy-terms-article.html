@@ -1,0 +1,16 @@
+{#-
+  Port of docsy v0.16.0 _partials/taxonomy_terms_article.html for every taxonomy
+  the page carries: a labelled list of the page's terms linking to their pages.
+-#}
+{%- if page is defined and page.taxonomies %}
+{%- for taxo, terms in page.taxonomies %}{% if terms %}
+<div class="taxonomy taxonomy-terms-article taxo-{{ taxo }}">
+  <h5 class="taxonomy-title">{{ taxo | title }}:</h5>
+  <ul class="taxonomy-terms">
+    {%- for t in terms %}
+    <li><a class="taxonomy-term" href="{{ get_taxonomy_url(kind=taxo, term=t) | safe }}" data-taxonomy-term="{{ t | slugify }}"><span class="taxonomy-label">{{ t }}</span></a></li>
+    {%- endfor %}
+  </ul>
+</div>
+{%- endif %}{% endfor %}
+{%- endif %}

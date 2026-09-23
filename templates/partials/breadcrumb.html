@@ -1,0 +1,32 @@
+{#-
+  Port of docsy v0.16.0 _partials/breadcrumb.html.
+
+  Zola gives every page and section an `ancestors` list of section paths, root
+  first, so the trail is a straight walk rather than Hugo's recursive template.
+  The root section is the site home. A taxonomy term page has no ancestors, so it
+  gets Home / <taxonomy> / <term>.
+-#}
+{%- if page is defined %}{% set cur = page %}{% elif section is defined %}{% set cur = section %}{% else %}{% set cur = false %}{% endif -%}
+{%- set home = get_section(path="_index.md", metadata_only=true) -%}
+{%- if cur %}{% set single = cur.ancestors | length <= 1 %}{% else %}{% set single = false %}{% endif -%}
+<nav aria-label="breadcrumb" class="td-breadcrumbs{% if single %} td-breadcrumbs__single{% endif %}">
+  <ol class="breadcrumb">
+    {%- if cur and cur.path == "/" %}
+    <li class="breadcrumb-item active" aria-current="page">{{ cur.extra.link_title | default(value=cur.title) }}</li>
+    {%- else %}
+    <li class="breadcrumb-item"><a href="{{ home.permalink | safe }}">{{ home.extra.link_title | default(value=home.title) }}</a></li>
+    {%- if cur %}
+      {%- for a in cur.ancestors %}{% if not loop.first %}
+      {%- set s = get_section(path=a, metadata_only=true) %}
+    <li class="breadcrumb-item"><a href="{{ s.permalink | safe }}">{{ s.extra.link_title | default(value=s.title) }}</a></li>
+      {%- endif %}{% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">{{ cur.extra.link_title | default(value=cur.title) }}</li>
+    {%- elif term is defined %}
+    <li class="breadcrumb-item"><a href="{{ get_url(path='/' ~ taxonomy.name ~ '/') | safe }}">{{ taxonomy.name | title }}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{ term.name }}</li>
+    {%- elif taxonomy is defined %}
+    <li class="breadcrumb-item active" aria-current="page">{{ taxonomy.name | title }}</li>
+    {%- endif %}
+    {%- endif %}
+  </ol>
+</nav>

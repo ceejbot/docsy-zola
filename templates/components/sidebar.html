@@ -1,0 +1,51 @@
+{#-
+  Left-nav tree components, ported from docsy v0.16.0 sidebar-tree.html's
+  "section-tree-nav-section" template.
+
+  Zola gives a section its own pages (already in the section's sort order) and
+  its subsections as paths sorted by weight; a section's weight is not exposed to
+  templates, so pages are listed first and subsections after, each group in its
+  own order. Pages bubbled up from a transparent subsection are skipped here
+  because their nearest ancestor is not this section; the transparent subsection
+  itself is what appears in the tree.
+
+  Components see no globals, so the current path is passed down explicitly.
+-#}
+{% component sidebar.section(section: map, here: string, depth: number, foldable: bool) %}
+{%- set active = section.path == here %}
+{%- set active_path = here is starting_with(pat=section.path) %}
+{%- set title = section.extra.link_title | default(value=section.title) %}
+{%- set mid = "m-" ~ section.path | slugify %}
+{%- set_global n = 0 %}
+{%- for p in section.pages %}{% if p.ancestors | last == section.relative_path and not p.extra.toc_hide | default(value=false) %}{% set_global n = n + 1 %}{% endif %}{% endfor %}
+{%- for sp in section.subsections %}{% set s = get_section(path=sp, metadata_only=true) %}{% if not s.extra.toc_hide | default(value=false) %}{% set_global n = n + 1 %}{% endif %}{% endfor %}
+{%- set with_child = n > 0 %}
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section{% if with_child %} with-child{% else %} without-child{% endif %}{% if active_path %} active-path{% endif %}" id="{{ mid }}-li">
+  {%- if foldable and depth >= 1 %}
+  <input type="checkbox" id="{{ mid }}-check"{% if active_path %} checked{% endif %}/>
+  <label for="{{ mid }}-check">
+    <a href="{{ section.permalink | safe }}" class="align-left ps-0{% if active %} active{% endif %} td-sidebar-link td-sidebar-link__section{% if depth == 0 %} tree-root{% endif %}" id="{{ mid }}"><span class="{% if active %}td-sidebar-nav-active-item{% endif %}">{{ title }}</span></a>
+  </label>
+  {%- else %}
+  <a href="{{ section.permalink | safe }}" class="align-left ps-0{% if active %} active{% endif %} td-sidebar-link td-sidebar-link__section{% if depth == 0 %} tree-root{% endif %}" id="{{ mid }}"><span class="{% if active %}td-sidebar-nav-active-item{% endif %}">{{ title }}</span></a>
+  {%- endif %}
+  {%- if with_child %}
+  <ul class="ul-{{ depth + 1 }}{% if depth + 1 > 1 %} foldable{% endif %}">
+    {%- for p in section.pages %}{% if p.ancestors | last == section.relative_path and not p.extra.toc_hide | default(value=false) %}
+    {{<sidebar.page page={p} here={here} />}}
+    {%- endif %}{% endfor %}
+    {%- for sp in section.subsections %}{% set s = get_section(path=sp) %}{% if not s.extra.toc_hide | default(value=false) %}
+    {{<sidebar.section section={s} here={here} depth={depth + 1} foldable={foldable} />}}
+    {%- endif %}{% endfor %}
+  </ul>
+  {%- endif %}
+</li>
+{% endcomponent sidebar.section %}
+
+{% component sidebar.page(page: map, here: string) %}
+{%- set active = page.path == here %}
+{%- set mid = "m-" ~ page.path | slugify %}
+<li class="td-sidebar-nav__section-title td-sidebar-nav__section without-child{% if active %} active-path{% endif %}" id="{{ mid }}-li">
+  <a href="{{ page.permalink | safe }}" class="align-left ps-0{% if active %} active{% endif %} td-sidebar-link td-sidebar-link__page" id="{{ mid }}"><span class="{% if active %}td-sidebar-nav-active-item{% endif %}">{{ page.extra.link_title | default(value=page.title) }}</span></a>
+</li>
+{% endcomponent sidebar.page %}

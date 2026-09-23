@@ -1,0 +1,66 @@
+{#- Port of docsy v0.16.0 _partials/head.html (+ head-css, favicons). -#}
+{%- if page is defined %}{% set cur = page %}{% elif section is defined %}{% set cur = section %}{% else %}{% set cur = false %}{% endif -%}
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{%- if config.extra.ui.show_light_dark_mode_menu | default(value=false) %}
+{#- Browser hints before CSS loads, then set the theme attribute so there is no flash. #}
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b0d12">
+<style>
+  html { background: Canvas; color: CanvasText; }
+  @media (prefers-color-scheme: dark) { html { background: #0b0d12; color: #e6e6e6; } }
+  html[data-theme-init] * { transition: none !important; }
+</style>
+<script>
+  (function () {
+    const stored = localStorage.getItem('td-color-theme');
+    let theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'auto') {
+      theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-bs-theme', theme);
+  })();
+</script>
+{%- endif %}
+{%- if cur %}
+<link rel="canonical" href="{{ cur.permalink | safe }}">
+{%- if config.extra.markdown_alternates | default(value=false) %}
+<link rel="alternate" type="text/markdown" href="{{ cur.permalink | safe }}index.md">
+{%- endif %}
+{%- endif %}
+{%- if config.generate_feeds %}{% for f in config.feed_filenames %}
+<link rel="alternate" type="application/{% if f is containing(pat="atom") %}atom{% else %}rss{% endif %}+xml" title="{{ config.title }}" href="{{ get_url(path=f) | safe }}">
+{%- endfor %}{% endif %}
+{#- Emit a robots meta only when the site decides: true indexes, false blocks,
+    unset says nothing and leaves it to the host. #}
+{%- if config.extra.robots_index is defined %}
+<meta name="robots" content="{% if config.extra.robots_index %}index, follow{% else %}noindex, nofollow{% endif %}">
+{%- endif %}
+{%- for icon in config.extra.favicons | default(value=[]) %}
+{%- if icon is ending_with(pat=".svg") %}
+<link rel="icon" href="{{ get_url(path=icon) | safe }}" type="image/svg+xml">
+{%- elif icon is ending_with(pat=".png") %}
+<link rel="{% if icon is starting_with(pat="apple-touch-icon") %}apple-touch-icon{% else %}icon{% endif %}" href="{{ get_url(path=icon) | safe }}" type="image/png">
+{%- else %}
+<link rel="icon" href="{{ get_url(path=icon) | safe }}">
+{%- endif %}
+{%- endfor %}
+<title>
+  {%- if cur and cur.path != "/" and cur.title %}{{ cur.title }} | {% elif term is defined %}{{ term.name }} | {% elif taxonomy is defined %}{{ taxonomy.name | title }} | {% endif %}{{ config.title -}}
+</title>
+<meta name="description" content="{% if cur and cur.description %}{{ cur.description }}{% else %}{{ config.description | default(value="") }}{% endif %}">
+{%- for origin in config.extra.preconnect | default(value=[]) %}
+<link rel="preconnect" href="{{ origin | safe }}" crossorigin>
+{%- endfor %}
+{#- Extra stylesheets (web fonts, say) load before the theme so the theme wins ties. #}
+{%- for href in config.extra.stylesheets | default(value=[]) %}
+<link rel="stylesheet" href="{{ href | safe }}">
+{%- endfor %}
+{#- Zola's class-based syntax highlighting writes one CSS file of token classes
+    into public/; name it in `extra.highlight_css` to link it. #}
+{%- if config.extra.highlight_css %}
+<link rel="stylesheet" href="{{ get_url(path=config.extra.highlight_css, cachebust=true) | safe }}">
+{%- endif %}
+<link href="{{ get_url(path='main.css', cachebust=true) | safe }}" rel="stylesheet">
+{%- block head_end %}{% endblock head_end %}

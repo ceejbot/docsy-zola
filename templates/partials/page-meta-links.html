@@ -1,0 +1,26 @@
+{#-
+  Port of docsy v0.16.0 _partials/page-meta-links.html.
+
+  Links to the page's source on GitHub, built from `config.extra.github_repo`
+  (https://github.com/org/repo), optional `github_subdir` (the site's directory
+  inside the repo, e.g. "site") and `github_branch` (default main). The Markdown
+  alternate link appears when `config.extra.markdown_alternates` is on; the
+  post-build step that publishes those files is the site's responsibility.
+-#}
+{%- if page is defined %}{% set cur = page %}{% elif section is defined %}{% set cur = section %}{% else %}{% set cur = false %}{% endif -%}
+{%- if cur and cur.relative_path %}
+{%- set repo = config.extra.github_repo | default(value="") %}
+<div class="td-page-meta ms-2 pb-1 pt-2 mb-0">
+{%- if config.extra.markdown_alternates | default(value=false) %}
+<a href="{{ cur.permalink | safe }}index.md" class="td-page-meta__markdown"><i class="fa-brands fa-markdown fa-fw"></i> View Markdown</a>
+{%- endif %}
+{%- if repo %}
+{%- set branch = config.extra.github_branch | default(value="main") %}
+{%- set subdir = config.extra.github_subdir | default(value="") %}
+{%- if subdir %}{% set src = branch ~ "/" ~ subdir ~ "/content/" ~ cur.relative_path %}{% else %}{% set src = branch ~ "/content/" ~ cur.relative_path %}{% endif %}
+<a href="{{ repo }}/tree/{{ src }}" class="td-page-meta--view td-page-meta__view" target="_blank" rel="noopener"><i class="fa-solid fa-file-lines fa-fw"></i> View page source</a>
+<a href="{{ repo }}/edit/{{ src }}" class="td-page-meta--edit td-page-meta__edit" target="_blank" rel="noopener"><i class="fa-solid fa-pen-to-square fa-fw"></i> Edit this page</a>
+<a href="{{ repo }}/issues/new?title={{ cur.title | urlencode }}" class="td-page-meta--issue td-page-meta__issue" target="_blank" rel="noopener"><i class="fa-solid fa-list-check fa-fw"></i> Create documentation issue</a>
+{%- endif %}
+</div>
+{%- endif %}

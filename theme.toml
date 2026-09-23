@@ -1,0 +1,51 @@
+name = "docsy-zola"
+description = "A Zola port of Google's docsy documentation theme: Bootstrap 5, left-nav tree, right-hand TOC, light/dark mode, offline search."
+license = "Apache-2.0"
+homepage = "https://github.com/ceejbot/docsy-zola"
+min_version = "0.23.0"
+demo = "https://ceejbot.github.io/docsy-zola/"
+
+[author]
+name = "C J Silverio"
+homepage = "https://github.com/ceejbot"
+
+[original]
+author = "Google docsy authors"
+homepage = "https://www.docsy.dev/"
+repo = "https://github.com/google/docsy"
+
+# The site must supply sass/main.scss with `@import "../themes/docsy-zola/sass/docsy"`
+# (see README.md): Zola compiles the theme's sass/ and the site's separately, and
+# the head links main.css, which only the site's file produces.
+
+[extra]
+# Every key the templates read, with its default. Copy the ones you change into
+# your site's config.toml under [extra].
+menu = []                    # [{ name = "Docs", url = "/docs/" }, ...] in display order
+github_repo = ""             # https://github.com/org/repo; enables the page-meta links
+github_subdir = ""           # the site's directory inside that repo, e.g. "site"
+github_branch = "main"
+copyright = ""               # footer copyright holder; default "<title> Authors"
+privacy_policy = ""
+favicons = []                # files under static/, e.g. ["favicon.svg", "favicon-32x32.png"]
+logo = ""                    # navbar logo image under static/, shown when ui.navbar_logo = true
+sidebar_logo = ""            # site mark centered at the top of the left column, linking home
+footer_links = []            # [{ name, url, icon = "fa-brands fa-github", side = "left" | "right" }]
+markdown_alternates = false  # link each page's Markdown source at <url>index.md (you publish it)
+# robots_index: leave unset to emit no robots meta; true = index,follow; false = noindex,nofollow
+preconnect = []              # origins to <link rel="preconnect">, e.g. Google Fonts hosts
+stylesheets = []             # extra stylesheet URLs linked before the theme's main.css
+highlight_css = ""           # Zola's class-based highlight CSS file, e.g. "giallo.css"
+mermaid_version = ""         # pin a Mermaid release to enable diagrams; unset loads nothing
+version = ""                 # shown as a pill in the navbar when set
+offline_search_max_results = 10
+
+[extra.ui]
+breadcrumb_disable = false
+sidebar_search_disable = false
+sidebar_menu_foldable = false
+sidebar_menu_compact = false
+show_light_dark_mode_menu = false
+navbar_logo = false
+navbar_theme = ""            # "dark" for a dark navbar
+scrollspy_disable = false

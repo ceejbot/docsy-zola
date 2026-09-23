@@ -1,0 +1,30 @@
+{#-
+  docsy content components (Tera 2), replacing the Hugo shortcodes this site used
+  from docsy and from its relearn-era shims. Markdown calls them as blocks:
+
+    {% <alert title="Heads up" color="info"> %}
+    Body markdown.
+    {% </alert> %}
+
+  Zola runs page content through Tera before Markdown, so each component emits
+  HTML the Markdown renderer will pass through: block-level output starts at
+  column 0 and inline output stays on one line.
+-#}
+
+{#- Port of docsy _shortcodes/alert.html. `body` is Markdown. -#}
+{% component alert(color: string = "primary", title: string = "") %}
+<div class="alert alert-{{ color }}" role="alert">
+{%- if title %}<div class="h4 alert-heading" role="heading">{{ title | safe }}</div>{% endif %}
+{{ body | markdown | safe }}
+</div>
+{% endcomponent alert %}
+
+{#- relearn's badge shim: an inline Bootstrap pill. Inline Markdown in the body. -#}
+{% component badge(style: string = "info") %}<span class="badge rounded-pill text-bg-{{ style }}">{{ body | trim | markdown(inline=true) | safe }}</span>{% endcomponent badge %}
+
+{#- Mermaid diagram source; rendered client-side by docsy-mermaid.js. -#}
+{% component mermaid() %}
+<pre class="mermaid">
+{{ body | trim | escape }}
+</pre>
+{% endcomponent mermaid %}

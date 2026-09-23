@@ -1,0 +1,27 @@
+{#-
+  Port of docsy v0.16.0 _partials/scripts.html, minus jQuery.
+
+  docsy concatenates its scripts through Hugo Pipes and depends on jQuery for
+  base.js and offline-search.js. Here each file is served from the theme's
+  static/js, and the two jQuery consumers are rewritten as docsy-nav.js and
+  docsy-search.js. Bootstrap's bundle (with Popper) supplies collapse, dropdown,
+  tooltip and ScrollSpy. Mermaid is included only when `extra.mermaid_version`
+  pins a release, and even then loads from the CDN only on pages that contain a
+  .mermaid element, via a dynamic import in docsy-mermaid.js.
+-#}
+<script src="{{ get_url(path='js/bootstrap.bundle.min.js') | safe }}"></script>
+<script src="{{ get_url(path='js/docsy-nav.js', cachebust=true) | safe }}"></script>
+{%- if config.build_search_index %}
+<script src="{{ get_url(path='js/docsy-search.js', cachebust=true) | safe }}" defer></script>
+{%- endif %}
+{%- if config.extra.ui.show_light_dark_mode_menu | default(value=false) %}
+<script src="{{ get_url(path='js/dark-mode.js') | safe }}"></script>
+{%- endif %}
+{%- if not config.extra.ui.scrollspy_disable | default(value=false) %}
+<script src="{{ get_url(path='js/scrollspy-patch.js') | safe }}"></script>
+{%- endif %}
+<script src="{{ get_url(path='js/click-to-copy.js') | safe }}" defer></script>
+{%- if config.extra.mermaid_version %}
+<script src="{{ get_url(path='js/docsy-mermaid.js', cachebust=true) | safe }}" type="module"></script>
+{%- endif %}
+{%- block body_end %}{% endblock body_end %}

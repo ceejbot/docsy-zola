@@ -1,0 +1,42 @@
+{#-
+  Port of docsy v0.16.0 _partials/section-index.html: the list of a section's
+  children (its own pages, then its subsections) with descriptions, shown under
+  the section body unless `extra.no_list` is set. `extra.simple_list` renders a
+  plain bulleted list instead. Children marked `extra.hide_summary` are skipped.
+
+  With transparent subsections, `section.pages` also carries the bubbled-up
+  grandchildren; those are excluded by checking each page's nearest ancestor.
+-#}
+{%- if not section.extra.no_list | default(value=false) %}
+<div class="section-index">
+  {%- if section.extra.simple_list | default(value=false) %}
+  <ul>
+    {%- for p in section.pages %}{% if p.ancestors | last == section.relative_path and not p.extra.hide_summary | default(value=false) %}
+    <li><a href="{{ p.permalink | safe }}">{{ p.title }}</a></li>
+    {%- endif %}{% endfor %}
+    {%- for sp in section.subsections %}{% set s = get_section(path=sp, metadata_only=true) %}{% if not s.extra.hide_summary | default(value=false) %}
+    <li><a href="{{ s.permalink | safe }}">{{ s.title }}</a></li>
+    {%- endif %}{% endfor %}
+  </ul>
+  {%- else %}
+  {%- set_global n = 0 %}
+  {%- for p in section.pages %}{% if p.ancestors | last == section.relative_path and not p.extra.hide_summary | default(value=false) %}{% set_global n = n + 1 %}{% endif %}{% endfor %}
+  {%- for sp in section.subsections %}{% set s = get_section(path=sp, metadata_only=true) %}{% if not s.extra.hide_summary | default(value=false) %}{% set_global n = n + 1 %}{% endif %}{% endfor %}
+  {%- if n > 0 %}
+  <hr class="panel-line">
+  {%- for p in section.pages %}{% if p.ancestors | last == section.relative_path and not p.extra.hide_summary | default(value=false) %}
+  <div class="entry">
+    <h5><a href="{{ p.permalink | safe }}">{{ p.title }}</a></h5>
+    <p>{% if p.description %}{{ p.description | markdown(inline=true) | safe }}{% endif %}</p>
+  </div>
+  {%- endif %}{% endfor %}
+  {%- for sp in section.subsections %}{% set s = get_section(path=sp, metadata_only=true) %}{% if not s.extra.hide_summary | default(value=false) %}
+  <div class="entry">
+    <h5><a href="{{ s.permalink | safe }}">{{ s.title }}</a></h5>
+    <p>{% if s.description %}{{ s.description | markdown(inline=true) | safe }}{% endif %}</p>
+  </div>
+  {%- endif %}{% endfor %}
+  {%- endif %}
+  {%- endif %}
+</div>
+{%- endif %}

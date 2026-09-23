@@ -1,0 +1,52 @@
+# The docsy-zola demo site, published at https://ceejbot.github.io/docsy-zola/.
+# It is deliberately unstyled: sass/main.scss is the bare theme import, so what
+# you see is docsy's own palette and type. Every [extra] key the theme reads is
+# listed with its default in ../theme.toml.
+base_url = "https://ceejbot.github.io/docsy-zola"
+title = "docsy-zola"
+description = "A Zola port of Google's docsy documentation theme."
+default_language = "en"
+theme = "docsy-zola"
+
+compile_sass = true
+build_search_index = true
+generate_feeds = false
+generate_sitemap = true
+generate_robots_txt = true
+
+taxonomies = [{ name = "tags", feed = false }]
+
+[markdown]
+insert_anchor_links = "right"
+
+[markdown.highlighting]
+style = "class"
+theme = "material-theme-ocean"
+
+[search]
+index_format = "fuse_json"
+include_title = true
+include_description = true
+include_content = true
+truncate_content_length = 200
+
+[extra]
+menu = [
+    { name = "Docs", url = "/docs/" },
+    { name = "Tags", url = "/tags/" },
+]
+github_repo = "https://github.com/ceejbot/docsy-zola"
+github_subdir = "example"
+github_branch = "latest"
+copyright = "C J Silverio"
+footer_links = [
+    { name = "GitHub", url = "https://github.com/ceejbot/docsy-zola", icon = "fa-brands fa-github", side = "left" },
+    { name = "docsy", url = "https://www.docsy.dev/", icon = "fa-solid fa-book", side = "right" },
+]
+highlight_css = "giallo.css"
+mermaid_version = "11.12.0"
+robots_index = true
+
+[extra.ui]
+sidebar_menu_foldable = true
+show_light_dark_mode_menu = true
